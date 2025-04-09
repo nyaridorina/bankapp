@@ -1,3 +1,11 @@
+from flask import Flask, render_template, request
+import os
+import pandas as pd
+from PyPDF2 import PdfReader
+
+app = Flask(__name__)  # EZ KELL a gunicorn-hoz
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':

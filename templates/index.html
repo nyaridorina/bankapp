@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Bankszámlakivonat feldolgozó</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Bankszámlakivonat kategorizáló</h1>
+        <p>Töltsd fel a bankszámlakivonatod PDF formátumban, és letöltheted Excelben a kategorizált adatokat.</p>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="pdf_file" accept=".pdf" required>
+            <button type="submit">Feldolgozás</button>
+        </form>
+    </div>
+</body>
+</html>

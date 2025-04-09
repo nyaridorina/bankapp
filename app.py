@@ -5,6 +5,29 @@ from PyPDF2 import PdfReader
 
 app = Flask(__name__)  # EZ KELL a gunicorn-hoz
 
+def feldolgoz_pdf(fajlnev):
+    try:
+        from PyPDF2 import PdfReader
+        reader = PdfReader(fajlnev)
+        szoveg = ''
+        for oldal in reader.pages:
+            szoveg += oldal.extract_text() + '\n'
+        
+        tranzakciok = []
+        for sor in szoveg.split('\n'):
+            if 'Ft' in sor:
+                tranzakciok.append({
+                    'datum': '2025-01-01',
+                    'kedvezmenyezett': 'Ismeretlen',
+                    'osszeg': sor.strip(),
+                    'cimke': 'egyéb'
+                })
+
+        return tranzakciok
+    except Exception as e:
+        print(f"Hiba a PDF feldolgozás során: {e}")
+        return []
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

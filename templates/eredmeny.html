@@ -1,0 +1,34 @@
+<!-- templates/eredmeny.html -->
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Feldolgozás eredménye</title>
+</head>
+<body>
+    <h1>Feldolgozott tranzakciók</h1>
+
+    {% if tranzakciok %}
+    <table border="1">
+        <tr>
+            <th>Dátum</th>
+            <th>Kedvezményezett</th>
+            <th>Összeg</th>
+            <th>Címke</th>
+        </tr>
+        {% for t in tranzakciok %}
+        <tr>
+            <td>{{ t['datum'] }}</td>
+            <td>{{ t['kedvezmenyezett'] }}</td>
+            <td>{{ t['osszeg'] }}</td>
+            <td>{{ t['cimke'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>Nincs megjeleníthető adat.</p>
+    {% endif %}
+
+    <p><a href="/">Vissza a főoldalra</a></p>
+</body>
+</html>

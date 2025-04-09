@@ -1,4 +1,5 @@
 Flask
-pdfplumber
+gunicorn
+PyPDF2
 pandas
 openpyxl

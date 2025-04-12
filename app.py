@@ -19,28 +19,23 @@ def parse_transactions(raw_text):
 
     # Minta a tranzakciókhoz, ha a PDF fájl formátuma megfelel
     pattern = re.compile(r"(\d{2}\.\d{2}\.\d{2})\s+(\d{2}\.\d{2}\.\d{2})\s+(.+?),\s+(.+?),\s+(-?\d[\d\.]*)")
-
-    # Kategória szótár (részletes kategorizálás)
-    category_dict = {
-        'Google': 'Vásárlás',
-        'SPPCC': 'Vásárlás',
-        'Spotify': 'Előfizetés',
-        'NETFLIX': 'Előfizetés',
-        'ALDI': 'Élelmiszer',
-        'ROSSMANN': 'Drogéria',
-        'Aegon': 'Megtakarítás',
-        'Szabadka': 'Vásárlás',
-        'Shell': 'Üzemanyag',
-        'HÉTKORONA': 'Gyógyszertár',
-        'OTPdirekt': 'Bankköltség',
-        'SZEMÉLYI KÖLCSÖN TÖRLESZTÉS': 'Hitel',
-        'Simonyi ABC': 'Élelmiszer',
-        'Nyári Dorina': 'Átutalás'
-    }
-
-    # Kategorizáló függvény, ami a szótár alapján adja meg a kategóriát
+    
+    # Kategóriák egyszerű logikája (példa, itt fejleszthető)
     def categorize(description):
-        for key, value in category_dict.items():
+        categories = {
+            'Google': 'Vásárlás',
+            'Spotify': 'Előfizetés',
+            'NETFLIX': 'Előfizetés',
+            'ALDI': 'Bevásárlás',
+            'ROSSMANN': 'Drogéria',
+            'Aegon': 'Megtakarítás',
+            'Szabadka': 'Vásárlás',
+            'Shell': 'Üzemanyag',
+            'HÉTKORONA': 'Gyógyszertár',
+            'OTPdirekt': 'Bankköltség',
+            'SZEMÉLYI KÖLCSÖN TÖRLESZTÉS': 'Hitel',
+        }
+        for key, value in categories.items():
             if key in description:
                 return value
         return 'Egyéb'  # Ha nincs megfelelő kategória, 'Egyéb'-et adunk
@@ -50,19 +45,12 @@ def parse_transactions(raw_text):
         if match:
             book_date, value_date, description1, description2, amount = match.groups()
             transaction_description = f"{description1}, {description2}"
-            
-            # Mínusz számok figyelembe vétele, ha az összeg negatív
-            amount_value = float(amount.replace('.', '').replace(',', '.'))
-            if amount_value > 0:  # Csak a mínusz előjelű összeggel dolgozunk
-                continue
-
-            # Kategória meghatározása a szótár alapján
             category = categorize(transaction_description)
             
             transactions.append({
                 "Date": book_date,
                 "Transaction Description": transaction_description,
-                "Amount (HUF)": amount_value,
+                "Amount (HUF)": float(amount.replace('.', '').replace(',', '.')),
                 "Category": category
             })
 

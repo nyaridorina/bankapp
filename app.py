@@ -17,19 +17,45 @@ def parse_transactions(raw_text):
     lines = raw_text.splitlines()
     transactions = []
 
+    # Minta a tranzakciókhoz, ha a PDF fájl formátuma megfelel
     pattern = re.compile(r"(\d{2}\.\d{2}\.\d{2})\s+(\d{2}\.\d{2}\.\d{2})\s+(.+?),\s+(.+?),\s+(-?\d[\d\.]*)")
     
+    # Kategóriák egyszerű logikája (példa, itt fejleszthető)
+    def categorize(description):
+        categories = {
+            'Google': 'Vásárlás',
+            'Spotify': 'Előfizetés',
+            'NETFLIX': 'Előfizetés',
+            'ALDI': 'Bevásárlás',
+            'ROSSMANN': 'Drogéria',
+            'Aegon': 'Megtakarítás',
+            'Szabadka': 'Vásárlás',
+            'Shell': 'Üzemanyag',
+            'HÉTKORONA': 'Gyógyszertár',
+            'OTPdirekt': 'Bankköltség',
+            'SZEMÉLYI KÖLCSÖN TÖRLESZTÉS': 'Hitel',
+        }
+        for key, value in categories.items():
+            if key in description:
+                return value
+        return 'Egyéb'  # Ha nincs megfelelő kategória, 'Egyéb'-et adunk
+
     for line in lines:
         match = pattern.match(line)
         if match:
             book_date, value_date, description1, description2, amount = match.groups()
+            transaction_description = f"{description1}, {description2}"
+            category = categorize(transaction_description)
+            
             transactions.append({
-                "Könyvelés dátuma": book_date,
-                "Értéknap": value_date,
-                "Megnevezés": f"{description1}, {description2}",
-                "Összeg": float(amount.replace('.', '').replace(',', '.'))
+                "Date": book_date,
+                "Transaction Description": transaction_description,
+                "Amount (HUF)": float(amount.replace('.', '').replace(',', '.')),
+                "Category": category
             })
+
     return transactions
+
 
 @app.route('/')
 def index():

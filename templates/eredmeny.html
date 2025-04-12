@@ -11,17 +11,17 @@
     {% if tranzakciok %}
     <table border="1">
         <tr>
-            <th>Dátum</th>
-            <th>Kedvezményezett</th>
-            <th>Összeg</th>
-            <th>Címke</th>
+            <th>Date</th>
+            <th>Transaction Description</th>
+            <th>Amount (HUF)</th>
+            <th>Category</th>
         </tr>
         {% for t in tranzakciok %}
         <tr>
-            <td>{{ t['datum'] }}</td>
-            <td>{{ t['kedvezmenyezett'] }}</td>
-            <td>{{ t['osszeg'] }}</td>
-            <td>{{ t['cimke'] }}</td>
+            <td>{{ t['Date'] }}</td>
+            <td>{{ t['Transaction Description'] }}</td>
+            <td>{{ t['Amount (HUF)'] }}</td>
+            <td>{{ t['Category'] }}</td>
         </tr>
         {% endfor %}
     </table>

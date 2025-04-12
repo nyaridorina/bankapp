@@ -37,7 +37,7 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    file = request.files['file']
+    file = request.files['pdf_file']
     if not file:
         return "Nincs fájl feltöltve!", 400
 
@@ -47,14 +47,7 @@ def upload():
     if not transactions:
         return "Nem sikerült tranzakciókat kinyerni a fájlból.", 400
 
-    df = pd.DataFrame(transactions)
-
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        df.to_excel(writer, index=False, sheet_name='Kivonat')
-    output.seek(0)
-
-    return send_file(output, download_name="kivonat.xlsx", as_attachment=True)
+    return render_template('eredmeny.html', tranzakciok=transactions)
 
 if __name__ == '__main__':
     app.run(debug=True)

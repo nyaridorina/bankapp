@@ -13,14 +13,20 @@ def extract_text_from_pdf(pdf_file):
         text += page.extract_text() + "\n"
     return text
 
+def extract_text_from_pdf(pdf_file):
+    reader = PdfReader(pdf_file)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
+    return text
+
 def parse_transactions(raw_text):
+    print("Raw Text Output:")  # Debugging output
+    print(raw_text)  # Nyomtatjuk a kinyert szöveget, hogy lássuk, mi van benne.
     lines = raw_text.splitlines()
     transactions = []
 
-    # Minta a tranzakciókhoz
-    pattern = re.compile(r"(\d{2}\.\d{2}\.\d{2})\s+(\d{2}\.\d{2}\.\d{2})\s+(.+?),\s+(.+?),\s+(-?\d[\d\.]*)")
-
-    # Kategóriák szótára
+    # Kategóriák szótár
     def categorize(description):
         categories = {
             'Google': 'Vásárlás',
@@ -34,13 +40,13 @@ def parse_transactions(raw_text):
             'HÉTKORONA': 'Gyógyszertár',
             'OTPdirekt': 'Bankköltség',
             'SZEMÉLYI KÖLCSÖN TÖRLESZTÉS': 'Hitel',
-            'Simonyi': 'Bevásárlás',  # Újabb kategória például
         }
-        
         for key, value in categories.items():
             if key.lower() in description.lower():  # Kis-nagybetű figyelmen kívül hagyása
                 return value
-        return 'Egyéb'  # Ha nincs megfelelő kategória
+        return 'Egyéb'
+
+    pattern = re.compile(r"(\d{2}\.\d{2}\.\d{2})\s+(\d{2}\.\d{2}\.\d{2})\s+(.+?),\s+(.+?),\s+(-?\d[\d\.]*)")
 
     for line in lines:
         match = pattern.match(line)
@@ -48,14 +54,12 @@ def parse_transactions(raw_text):
             book_date, value_date, description1, description2, amount = match.groups()
             transaction_description = f"{description1}, {description2}"
 
-            # Ha az összeg negatív, tartsuk meg a mínusz jelet
+            # Összeg feldolgozása (csak a mínuszos számokat tartjuk meg)
             amount_value = float(amount.replace('.', '').replace(',', '.'))
-            if amount_value > 0:  # Ha pozitív, ki kell hagyni a tranzakciót
-                continue
-            # Kategória meghatározása
-            category = categorize(transaction_description)
+            if amount_value > 0:
+                continue  # Csak a negatív összegű tranzakciókat vesszük figyelembe.
 
-            # Tranzakció hozzáadása
+            category = categorize(transaction_description)
             transactions.append({
                 "Date": book_date,
                 "Transaction Description": transaction_description,
@@ -64,6 +68,7 @@ def parse_transactions(raw_text):
             })
 
     return transactions
+
 
 
     for line in lines:

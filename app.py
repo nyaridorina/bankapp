@@ -20,9 +20,17 @@ def extract_text_from_pdf(pdf_file):
         text += page.extract_text() + "\n"
     return text
 
+def extract_text_from_pdf(pdf_file):
+    reader = PdfReader(pdf_file)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
+    return text
+
 def parse_transactions(raw_text):
-    print("Raw Text Output:")  # Debugging output
-    print(raw_text)  # Nyomtatjuk a kinyert szöveget, hogy lássuk, mi van benne.
+    # Nyomtatjuk ki a kinyert szöveget
+    print("Raw Text Output:")  
+    print(raw_text)  # Kinyomtatjuk, hogy lássuk, mi van benne
     lines = raw_text.splitlines()
     transactions = []
 
@@ -46,6 +54,7 @@ def parse_transactions(raw_text):
                 return value
         return 'Egyéb'
 
+    # Regex
     pattern = re.compile(r"(\d{2}\.\d{2}\.\d{2})\s+(\d{2}\.\d{2}\.\d{2})\s+(.+?),\s+(.+?),\s+(-?\d[\d\.]*)")
 
     for line in lines:
@@ -68,6 +77,7 @@ def parse_transactions(raw_text):
             })
 
     return transactions
+
 
 
 

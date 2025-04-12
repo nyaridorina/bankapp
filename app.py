@@ -17,10 +17,10 @@ def parse_transactions(raw_text):
     lines = raw_text.splitlines()
     transactions = []
 
-    # Minta a tranzakciókhoz, ha a PDF fájl formátuma megfelel
+    # Minta a tranzakciókhoz
     pattern = re.compile(r"(\d{2}\.\d{2}\.\d{2})\s+(\d{2}\.\d{2}\.\d{2})\s+(.+?),\s+(.+?),\s+(-?\d[\d\.]*)")
-    
-    # Kategóriák egyszerű logikája (példa, itt fejleszthető)
+
+    # Kategóriák szótára
     def categorize(description):
         categories = {
             'Google': 'Vásárlás',
@@ -34,27 +34,37 @@ def parse_transactions(raw_text):
             'HÉTKORONA': 'Gyógyszertár',
             'OTPdirekt': 'Bankköltség',
             'SZEMÉLYI KÖLCSÖN TÖRLESZTÉS': 'Hitel',
+            'Simonyi': 'Bevásárlás',  # Újabb kategória például
         }
+        
         for key, value in categories.items():
-            if key in description:
+            if key.lower() in description.lower():  # Kis-nagybetű figyelmen kívül hagyása
                 return value
-        return 'Egyéb'  # Ha nincs megfelelő kategória, 'Egyéb'-et adunk
+        return 'Egyéb'  # Ha nincs megfelelő kategória
 
     for line in lines:
         match = pattern.match(line)
         if match:
             book_date, value_date, description1, description2, amount = match.groups()
             transaction_description = f"{description1}, {description2}"
+
+            # Ha az összeg negatív, tartsuk meg a mínusz jelet
+            amount_value = float(amount.replace('.', '').replace(',', '.'))
+            if amount_value > 0:  # Ha pozitív, ki kell hagyni a tranzakciót
+                continue
+            # Kategória meghatározása
             category = categorize(transaction_description)
-            
+
+            # Tranzakció hozzáadása
             transactions.append({
                 "Date": book_date,
                 "Transaction Description": transaction_description,
-                "Amount (HUF)": float(amount.replace('.', '').replace(',', '.')),
+                "Amount (HUF)": amount_value,
                 "Category": category
             })
 
     return transactions
+
 
     for line in lines:
         match = pattern.match(line)

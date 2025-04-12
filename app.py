@@ -17,7 +17,7 @@ def extract_text_from_pdf(pdf_file):
 # Tranzakciók kinyerése és feldolgozása
 def parse_transactions(raw_text):
     print("Raw Text Output:")  
-    print(raw_text)  # A kinyert szöveg ellenőrzése
+    print(raw_text)  # Kinyomtatjuk a nyers szöveget
     lines = raw_text.splitlines()
     transactions = []
 

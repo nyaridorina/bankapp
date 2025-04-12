@@ -1,17 +1,17 @@
 from flask import Flask, render_template, request, send_file
 import pandas as pd
 import re
-from PyPDF2 import PdfReader
+import pdfplumber
 import io
 
 app = Flask(__name__)
 
-# PDF-ből szöveg kinyerése
+# PDF-ből szöveg kinyerése pdfplumber segítségével
 def extract_text_from_pdf(pdf_file):
-    reader = PdfReader(pdf_file)
-    text = ""
-    for page in reader.pages:
-        text += page.extract_text() + "\n"
+    with pdfplumber.open(pdf_file) as pdf:
+        text = ""
+        for page in pdf.pages:
+            text += page.extract_text() + "\n"
     return text
 
 # Tranzakciók kinyerése és feldolgozása
